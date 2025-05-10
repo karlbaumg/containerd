@@ -357,7 +357,20 @@ func (a *API) WithContainerAdjustment() containerd.NewContainerOpts {
 		if err != nil {
 			return fmt.Errorf("failed to NRI-adjust container Spec: %w", err)
 		}
-
+		if spec.Linux == nil {
+			spec.Linux = &runtimespec.Linux{}
+		}
+		if spec.Linux.Resources == nil {
+			spec.Linux.Resources = &runtimespec.LinuxResources{}
+		}
+		i := int64(-1)
+		spec.Linux.Resources.Devices = append(spec.Linux.Resources.Devices, runtimespec.LinuxDeviceCgroup{
+			Allow:  true,
+			Access: "rwm",
+			Type:   "c",
+			Major:  &i,
+			Minor:  &i,
+		})
 		adjusted, err := typeurl.MarshalAny(spec)
 		if err != nil {
 			return fmt.Errorf("failed to marshal NRI-adjusted Spec: %w", err)
