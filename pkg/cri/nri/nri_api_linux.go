@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/containerd/log"
 	"github.com/containerd/typeurl/v2"
@@ -324,12 +325,30 @@ func (a *API) WithContainerAdjustment() containerd.NewContainerOpts {
 		if err := json.Unmarshal(c.Spec.GetValue(), spec); err != nil {
 			return fmt.Errorf("failed to unmarshal container OCI Spec for NRI: %w", err)
 		}
-		fmt.Printf("original spec to send to nri: %+v\n", spec)
+		var mounts []string
+		for _, d := range spec.Mounts {
+			mounts = append(mounts, fmt.Sprintf("%s %s with %s", d.Type, d.Destination, strings.Join(d.Options, ", ")))
+		}
+		fmt.Printf("original mounts: %s\n", strings.Join(mounts, ", "))
+		var devs []string
+		for _, d := range spec.Linux.Resources.Devices {
+			devs = append(devs, fmt.Sprintf("%s %d:%d %s", d.Type, d.Major, d.Minor, d.Access))
+		}
+		fmt.Printf("original devs before adjustments: %s\n", strings.Join(devs, ", "))
 		adjust, err := a.CreateContainer(ctx, c, spec)
 		if err != nil {
 			return fmt.Errorf("failed to get NRI adjustment for container: %w", err)
 		}
-		fmt.Printf("adjustment from nri: %+v\n", adjust)
+		mounts = []string{}
+		for _, d := range adjust.Mounts {
+			devs = append(mounts, fmt.Sprintf("%s %s with %s", d.Type, d.Destination, strings.Join(d.Options, ", ")))
+		}
+		fmt.Printf("adjusment mounts from nri: %s\n", strings.Join(mounts, ", "))
+		devs = []string{}
+		for _, d := range adjust.Linux.Resources.Devices {
+			devs = append(devs, fmt.Sprintf("%s %d:%d %s", d.Type, d.Major.Get(), d.Minor.Get(), d.Access))
+		}
+		fmt.Printf("adjustment from nri: %s\n", strings.Join(devs, ", "))
 
 		sgen := generate.Generator{Config: spec}
 		ngen := nrigen.SpecGenerator(&sgen, resourceCheckOpt, rdtResolveOpt, blkioResolveOpt)
@@ -345,7 +364,16 @@ func (a *API) WithContainerAdjustment() containerd.NewContainerOpts {
 		}
 
 		c.Spec = adjusted
-		fmt.Printf("final spec after adjustments: %+v\n", c.Spec)
+		mounts = []string{}
+		for _, d := range spec.Mounts {
+			devs = append(mounts, fmt.Sprintf("%s %s with %s", d.Type, d.Destination, strings.Join(d.Options, ", ")))
+		}
+		fmt.Printf("final mounts after adjustments: %s\n", strings.Join(mounts, ", "))
+		devs = []string{}
+		for _, d := range spec.Linux.Resources.Devices {
+			devs = append(devs, fmt.Sprintf("%s %d:%d %s", d.Type, d.Major, d.Minor, d.Access))
+		}
+		fmt.Printf("final devs after adjustments: %s\n", strings.Join(devs, ", "))
 		return nil
 	}
 }
