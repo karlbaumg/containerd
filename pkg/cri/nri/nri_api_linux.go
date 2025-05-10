@@ -324,16 +324,16 @@ func (a *API) WithContainerAdjustment() containerd.NewContainerOpts {
 		if err := json.Unmarshal(c.Spec.GetValue(), spec); err != nil {
 			return fmt.Errorf("failed to unmarshal container OCI Spec for NRI: %w", err)
 		}
-		log.G(ctx).WithField("original spec before nri", spec)
+		fmt.Printf("original spec to send to nri: %+v\n", spec)
 		adjust, err := a.CreateContainer(ctx, c, spec)
 		if err != nil {
 			return fmt.Errorf("failed to get NRI adjustment for container: %w", err)
 		}
-		log.G(ctx).WithField("karlbaumg: adjustment received", adjust)
+		fmt.Printf("adjustment from nri: %+v\n", adjust)
 
 		sgen := generate.Generator{Config: spec}
 		ngen := nrigen.SpecGenerator(&sgen, resourceCheckOpt, rdtResolveOpt, blkioResolveOpt)
-
+		fmt.Printf("nri adjustment from container will be applied\n")
 		err = ngen.Adjust(adjust)
 		if err != nil {
 			return fmt.Errorf("failed to NRI-adjust container Spec: %w", err)
@@ -345,7 +345,7 @@ func (a *API) WithContainerAdjustment() containerd.NewContainerOpts {
 		}
 
 		c.Spec = adjusted
-		log.G(ctx).WithField("karlbaumg: final spec", c.Spec)
+		fmt.Printf("final spec after adjustments: %+v\n", c.Spec)
 		return nil
 	}
 }
