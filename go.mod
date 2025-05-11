@@ -4,7 +4,7 @@ go 1.22.0
 
 toolchain go1.24.2
 
-replace github.com/containerd/nri => github.com/karlbaumg/nri v0.0.0-20250511125426-743734c6e6ab
+replace github.com/containerd/nri => github.com/karlbaumg/nri v0.0.0-20250511130434-ac82bf808295
 
 require (
 	dario.cat/mergo v1.0.0

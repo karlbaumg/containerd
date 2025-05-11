@@ -1280,8 +1280,8 @@ github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfV
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/jung-kurt/gofpdf v1.0.0/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+r32jIOes=
 github.com/jung-kurt/gofpdf v1.0.3-0.20190309125859-24315acbbda5/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+r32jIOes=
-github.com/karlbaumg/nri v0.0.0-20250511125426-743734c6e6ab h1:GXPbU+GvS02QcILE+oW4HevqL5aqHxuNuVFFjf/jHSc=
-github.com/karlbaumg/nri v0.0.0-20250511125426-743734c6e6ab/go.mod h1:uSkgBrCdEtAiEz4vnrq8gmAC4EnVAM5Klt0OuK5rZYQ=
+github.com/karlbaumg/nri v0.0.0-20250511130434-ac82bf808295 h1:moZGwWlIFiLsY+J2l8lTRmGwUrkVI75BJAVn0AVTafU=
+github.com/karlbaumg/nri v0.0.0-20250511130434-ac82bf808295/go.mod h1:uSkgBrCdEtAiEz4vnrq8gmAC4EnVAM5Klt0OuK5rZYQ=
 github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51/go.mod h1:CzGEWj7cYgsdH8dAjBGEr58BoE7ScuLd+fwFZ44+/x8=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/errcheck v1.2.0/go.mod h1:/BMXB+zMLi60iA8Vv6Ksmxu/1UDYcXs4uQLJ+jE2L00=
