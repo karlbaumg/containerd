@@ -17,7 +17,9 @@
 package generate
 
 import (
+	"context"
 	"fmt"
+	"github.com/containerd/nri/pkg/log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -224,10 +226,14 @@ func (g *Generator) AdjustHooks(hooks *nri.Hooks) {
 
 // AdjustResources adjusts the (Linux) resources in the OCI Spec.
 func (g *Generator) AdjustResources(r *nri.LinuxResources) error {
+	ctx := context.Background()
+	log.Infof(ctx, "adjusting resources")
+	fmt.Println("adjusting resources")
 	if r == nil {
 		return nil
 	}
-
+	log.Infof(ctx, "adjusting non-nil resources")
+	fmt.Println("adjusting non-nil resources")
 	g.initConfigLinux()
 
 	if r.Cpu != nil {
@@ -267,6 +273,15 @@ func (g *Generator) AdjustResources(r *nri.LinuxResources) error {
 	}
 	if v := r.GetPids(); v != nil {
 		g.SetLinuxResourcesPidsLimit(v.GetLimit())
+	}
+	log.Infof(ctx, "number of cgroup devices: %d", len(r.GetDevices()))
+	log.Infof(ctx, "cgroup devices %+v", r.GetDevices())
+	for _, dc := range r.GetDevices() {
+		log.Infof(ctx, "adjusting resource device %+v", dc)
+		if d := dc; d != nil {
+			log.Infof(ctx, "adjusting non-nil resource device: %+v MajorGet: %d MinorGet: %d\n", d, d.Major.Get(), d.Minor.Get())
+			g.AddLinuxResourcesDevice(d.Allow, d.Type, d.Major.Get(), d.Minor.Get(), d.Access)
+		}
 	}
 	if g.checkResources != nil {
 		if err := g.checkResources(g.Config.Linux.Resources); err != nil {
