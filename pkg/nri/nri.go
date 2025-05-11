@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"path"
+	"strings"
 	"sync"
 
 	"github.com/containerd/log"
@@ -246,6 +247,11 @@ func (l *local) CreateContainer(ctx context.Context, pod PodSandbox, ctr Contain
 	if err != nil {
 		return nil, err
 	}
+	var devs []string
+	for _, d := range response.Adjust.Linux.Resources.Devices {
+		devs = append(devs, fmt.Sprintf("device rule %s %d:%d %s", d.Type, d.Major.GetValue(), d.Minor.GetValue(), d.Access))
+	}
+	fmt.Printf("karlbaumg: (l *local) CreateContainer(ctx context.Context, pod PodSandbox, ctr Container) %s\n", strings.Join(devs, ","))
 
 	_, err = l.evictContainers(ctx, response.Evict)
 	if err != nil {
